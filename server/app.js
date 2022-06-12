@@ -10,13 +10,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const cloudinary = require('cloudinary');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 const router = express.Router();
-const url =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://olatocode:12345@cluster0.nozkm.mongodb.net/mediumDatabase?retryWrites=true&w=majority';
+const url = process.env.MONGODB_URL;
 
 /** configure cloudinary */
 cloudinary.config({
