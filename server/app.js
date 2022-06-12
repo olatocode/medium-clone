@@ -15,8 +15,8 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const router = express.Router();
-const url = process.env.MONGODB_URL;
 
 /** configure cloudinary */
 cloudinary.config({
@@ -24,15 +24,6 @@ cloudinary.config({
   api_key: '',
   api_secret: '',
 });
-
-/** connect to MongoDB datastore */
-try {
-  mongoose.connect(url, {
-    //useMongoClient: true
-  });
-} catch (error) {}
-
-let port = 5000 || process.env.PORT;
 
 /** set up routes {API Endpoints} */
 routes(router);
@@ -44,7 +35,25 @@ app.use(helmet());
 
 app.use('/api', router);
 
+/** connect to MongoDB datastore */
+
+const connect_MongoDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.log(error.message);
+    console.log(`Database Not Connected`);
+  }
+};
+connect_MongoDB();
+
+const PORT = 5000;
+
 /** start server */
-app.listen(port, () => {
-  console.log(`Server started at port: ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server started at port: ${PORT}`);
 });
